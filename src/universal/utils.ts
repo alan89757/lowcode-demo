@@ -2,6 +2,8 @@ import { material, project } from '@alilc/lowcode-engine';
 import { filterPackages } from '@alilc/lowcode-plugin-inject'
 import { Message, Dialog } from '@alifd/next';
 import { TransformStage } from '@alilc/lowcode-types';
+import { request } from 'src/common/request';
+
 
 export const loadIncrementalAssets = () => {
   material?.onChangeAssets(() => {
@@ -146,17 +148,28 @@ export const loadIncrementalAssets = () => {
 };
 
 export const preview = (scenarioName: string = 'index') => {
-  saveSchema(scenarioName);
+  saveSchema();
   setTimeout(() => {
-    const search = location.search ? `${location.search}&scenarioName=${scenarioName}` : `?scenarioName=${scenarioName}`;
-    window.open(`./preview.html${search}`);
+    // const search = location.search ? `${location.search}&scenarioName=${scenarioName}` : `?scenarioName=${scenarioName}`;
+    window.open(`./preview.html${location.search}`);
   }, 500);
 };
 
 export const saveSchema = async (scenarioName: string = 'index') => {
-  setProjectSchemaToLocalStorage(scenarioName);
-
-  await setPackgesToLocalStorage(scenarioName);
+  // 获取schema
+  const schema = project.exportSchema();
+  // console.log('schema--', schema);
+  const url = 'http://localhost:3000/api/v1/schemas';
+  // 保存schema
+  const response = await request(url, 'POST', {
+    page: 'home',
+    schema,
+  }, {
+    'Content-Type': 'application/json'
+  })
+  // console.log('response--', response);
+  // setProjectSchemaToLocalStorage(scenarioName);
+  // await setPackgesToLocalStorage(scenarioName);
   // window.localStorage.setItem(
   //   'projectSchema',
   //   JSON.stringify(project.exportSchema(TransformStage.Save))
@@ -279,80 +292,3 @@ export const getPageSchema = async (scenarioName: string = 'index') => {
   return await request('./schema.json');
 };
 
-function request(
-  dataAPI: string,
-  method = 'GET',
-  data?: object | string,
-  headers?: object,
-  otherProps?: any,
-): Promise<any> {
-  return new Promise((resolve, reject): void => {
-    if (otherProps && otherProps.timeout) {
-      setTimeout((): void => {
-        reject(new Error('timeout'));
-      }, otherProps.timeout);
-    }
-    fetch(dataAPI, {
-      method,
-      credentials: 'include',
-      headers,
-      body: data,
-      ...otherProps,
-    })
-      .then((response: Response): any => {
-        switch (response.status) {
-          case 200:
-          case 201:
-          case 202:
-            return response.json();
-          case 204:
-            if (method === 'DELETE') {
-              return {
-                success: true,
-              };
-            } else {
-              return {
-                __success: false,
-                code: response.status,
-              };
-            }
-          case 400:
-          case 401:
-          case 403:
-          case 404:
-          case 406:
-          case 410:
-          case 422:
-          case 500:
-            return response
-              .json()
-              .then((res: object): any => {
-                return {
-                  __success: false,
-                  code: response.status,
-                  data: res,
-                };
-              })
-              .catch((): object => {
-                return {
-                  __success: false,
-                  code: response.status,
-                };
-              });
-          default:
-            return null;
-        }
-      })
-      .then((json: any): void => {
-        if (json && json.__success !== false) {
-          resolve(json);
-        } else {
-          delete json.__success;
-          reject(json);
-        }
-      })
-      .catch((err: Error): void => {
-        reject(err);
-      });
-  });
-}

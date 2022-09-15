@@ -15,13 +15,17 @@ const getScenarioName = function() {
   return 'index';
 }
 
+// 预览
 const SamplePreview = () => {
   const [data, setData] = useState({});
 
   async function init() {
     const scenarioName = getScenarioName();
     const packages = getPackagesFromLocalStorage(scenarioName);
+
     const projectSchema = getProjectSchemaFromLocalStorage(scenarioName);
+
+    // 
     const { componentsMap: componentsMapArray, componentsTree } = projectSchema;
     const componentsMap: any = {};
     componentsMapArray.forEach((component: any) => {
@@ -46,7 +50,8 @@ const SamplePreview = () => {
     const assetLoader = new AssetLoader();
     await assetLoader.load(libraryAsset);
     const components = await injectComponents(buildComponents(libraryMap, componentsMap));
-
+    // console.log('SamplePreview--')
+    // return false;
     setData({
       schema,
       components,
@@ -61,7 +66,7 @@ const SamplePreview = () => {
   }
 
   return (
-    <div className="lowcode-plugin-sample-preview">
+    <div className="lowcode-plugin-sample-preview aaa111">
       <ReactRenderer
         className="lowcode-plugin-sample-preview-content"
         schema={schema}
