@@ -1,6 +1,7 @@
 import { init, plugins } from '@alilc/lowcode-engine';
 import { createFetchHandler } from '@alilc/lowcode-datasource-fetch-handler'
 import registerPlugins from '../../universal/plugin';
+import pluginDemo from '../../sample-plugins/plugin-demo/index';
 import { scenarioSwitcher } from '../../sample-plugins/scenario-switcher';
 import '../../universal/global.scss';
 
@@ -19,6 +20,7 @@ preference.set('DataSourcePane', {
 
 (async function main() {
   await plugins.register(scenarioSwitcher);
+  await plugins.register(pluginDemo);
   await registerPlugins();
 
   init(document.getElementById('lce-container')!, {

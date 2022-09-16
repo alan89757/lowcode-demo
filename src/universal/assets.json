@@ -93,6 +93,26 @@
         ]
       },
       "advancedEditUrls": {}
+    },
+    {
+      "package": "lowcode-material-example",
+      "version": "1.0.0",
+      "library": "BizComp",
+      "urls": [
+        "https://unpkg.com/lowcode-material-example@1.0.0/build/lowcode/render/default/view.js",
+        "https://unpkg.com/lowcode-material--example@1.0.0/build/lowcode/render/default/view.css"
+      ],
+      "editUrls": [
+        "https://unpkg.com/lowcode-material-example@1.0.0/build/lowcode/view.js",
+        "https://unpkg.com/lowcode-material-example@1.0.0/build/lowcode/view.css"
+      ],
+      "advancedUrls": {
+        "default": [
+          "https://unpkg.com/lowcode-material-example@1.0.0/build/lowcode/render/default/view.js",
+          "https://unpkg.com/lowcode-material-example@1.0.0/build/lowcode/render/default/view.css"
+        ]
+      },
+      "advancedEditUrls": {}
     }
   ],
   "components": [
@@ -143,6 +163,22 @@
       "advancedUrls": {
         "default": [
           "https://unpkg.com/my-material-name@0.1.2/build/lowcode/meta.js"
+        ]
+      }
+    },
+    {
+      "exportName": "LowcodeMaterialExampleMeta",
+      "npm": {
+        "package": "lowcode-material-example",
+        "version": "1.0.0"
+      },
+      "url": "https://unpkg.com/lowcode-material-example@1.0.0/build/lowcode/meta.js",
+      "urls": {
+        "default": "https://unpkg.com/lowcode-material-example@1.0.0/build/lowcode/meta.js"
+      },
+      "advancedUrls": {
+        "default": [
+          "https://unpkg.com/lowcode-material-example@1.0.0/build/lowcode/meta.js"
         ]
       }
     }
