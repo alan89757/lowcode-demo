@@ -149,7 +149,7 @@ export const loadIncrementalAssets = () => {
 export const preview = (scenarioName: string = 'index') => {
   saveSchema();
   setTimeout(() => {
-    const search = location.search ? `${location.search}&scenarioName=${scenarioName}` : `?scenarioName=${scenarioName}`;
+    const search = location.search ? `${location.search}` : ``;
     window.open(`./preview.html${search}`);
   }, 500);
 };
