@@ -30,8 +30,8 @@ import {
   saveSchema,
   resetSchema,
   preview,
+  getAssets,
 } from './utils';
-import assets from './assets.json'
 import { registerRefProp } from 'src/sample-plugins/set-ref-prop';
 
 export default async function registerPlugins() {
@@ -62,6 +62,8 @@ export default async function registerPlugins() {
         // ).json();
         // 设置物料描述
         const { material, project } = ctx;
+
+        const { data: assets } = await getAssets();
 
         await material.setAssets(await injectAssets(assets));
 
@@ -199,7 +201,7 @@ export default async function registerPlugins() {
           },
           content: (
             <Button onClick={() => saveSchema()}>
-              保存到本地
+              保存
             </Button>
           ),
         });

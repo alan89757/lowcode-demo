@@ -2,6 +2,7 @@ import { material, project } from '@alilc/lowcode-engine';
 import { filterPackages } from '@alilc/lowcode-plugin-inject'
 import { Message, Dialog } from '@alifd/next';
 import { TransformStage } from '@alilc/lowcode-types';
+import { request2 } from './request';
 
 export const loadIncrementalAssets = () => {
   material?.onChangeAssets(() => {
@@ -153,20 +154,18 @@ export const preview = (scenarioName: string = 'index') => {
   }, 500);
 };
 
-export const saveSchema = async (scenarioName: string = 'index') => {
-  setProjectSchemaToLocalStorage(scenarioName);
+// 获取资产包
+export const getAssets = async ()=> {
+  return request2.get('http://localhost:3000/assets.json');
+}
 
-  await setPackgesToLocalStorage(scenarioName);
-  // window.localStorage.setItem(
-  //   'projectSchema',
-  //   JSON.stringify(project.exportSchema(TransformStage.Save))
-  // );
-  // const packages = await filterPackages(material.getAssets().packages);
-  // window.localStorage.setItem(
-  //   'packages',
-  //   JSON.stringify(packages)
-  // );
-  Message.success('成功保存到本地');
+export const saveSchema = async () => {
+  const queryString = location.search || '';
+  const defaultCurrentPage: string = queryString.includes('home') ? 'home' : 'login';
+  const schema = project.exportSchema();
+  const url = 'http://localhost:3000/api/v1/schemas';
+  const response = await request2.post(url, { page: defaultCurrentPage, schema})
+  Message.success('成功保存');
 };
 
 export const resetSchema = async (scenarioName: string = 'index') => {
