@@ -26,13 +26,15 @@ import { deleteHiddenTransducer } from '../sample-plugins/delete-hidden-transduc
 
 import {
   loadIncrementalAssets,
-  getPageSchema,
+  getCurrentPageSchema,
   saveSchema,
   resetSchema,
   preview,
   getAssets,
 } from './utils';
 import { registerRefProp } from 'src/sample-plugins/set-ref-prop';
+
+import navPage from 'src/plugins/nav/index';
 
 export default async function registerPlugins() {
   await plugins.register(ManualPlugin);
@@ -67,7 +69,13 @@ export default async function registerPlugins() {
 
         await material.setAssets(await injectAssets(assets));
 
-        const schema = await getPageSchema();
+        const { data: projectSchema } = await getCurrentPageSchema()
+
+      console.log('projectSchema--', projectSchema)        
+
+        const schema = projectSchema?.componentsTree?.[0];
+
+        console.log('schema--', schema)
 
         // 加载 schema
         project.openDocument(schema);
@@ -114,6 +122,21 @@ export default async function registerPlugins() {
         project.onSimulatorRendererReady(() => {
           componentsPane?.enable?.();
         })
+        // 新增导航
+        skeleton.add({
+          index: -1,
+          area: 'leftArea',
+          type: 'PanelDock',
+          name: 'navPage',
+          content: navPage,
+          contentProps: {},
+          props: {
+            align: 'top',
+            icon: 'kaiwenjianjia',
+            description: '页面导航',
+          },
+        });
+        
       },
     };
   }

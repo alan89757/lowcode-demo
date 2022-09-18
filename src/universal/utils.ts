@@ -147,7 +147,7 @@ export const loadIncrementalAssets = () => {
 };
 
 export const preview = (scenarioName: string = 'index') => {
-  saveSchema(scenarioName);
+  saveSchema();
   setTimeout(() => {
     const search = location.search ? `${location.search}&scenarioName=${scenarioName}` : `?scenarioName=${scenarioName}`;
     window.open(`./preview.html${search}`);
@@ -159,12 +159,24 @@ export const getAssets = async ()=> {
   return request2.get('http://localhost:3000/assets.json');
 }
 
+// 获取页面schema
+export const getCurrentPageSchema = async ()=> {
+  let currentPage = 'home';
+  if (location.search) {
+    currentPage = '' + new URLSearchParams(location.search.slice(1)).get('page')
+  }
+  console.log('page--', currentPage)
+  return request2.get(`http://localhost:3000/get-page-schema?page=${currentPage}`);
+}
+
 export const saveSchema = async () => {
-  const queryString = location.search || '';
-  const defaultCurrentPage: string = queryString.includes('home') ? 'home' : 'login';
+  let currentPage = 'home';
+  if (location.search) {
+    currentPage = new URLSearchParams(location.search.slice(1)).get('page') || 'home'
+  }
   const schema = project.exportSchema();
   const url = 'http://localhost:3000/api/v1/schemas';
-  const response = await request2.post(url, { page: defaultCurrentPage, schema})
+  const response = await request2.post(url, { page: currentPage, schema})
   Message.success('成功保存');
 };
 

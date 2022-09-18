@@ -6,7 +6,7 @@ import ReactRenderer from '@alilc/lowcode-react-renderer';
 import { injectComponents } from '@alilc/lowcode-plugin-inject';
 import { createFetchHandler } from '@alilc/lowcode-datasource-fetch-handler'
 
-import { getProjectSchemaFromLocalStorage, getPackagesFromLocalStorage } from './universal/utils';
+import { getAssets, getCurrentPageSchema } from './universal/utils';
 
 const getScenarioName = function() {
   if (location.search) {
@@ -19,9 +19,10 @@ const SamplePreview = () => {
   const [data, setData] = useState({});
 
   async function init() {
-    const scenarioName = getScenarioName();
-    const packages = getPackagesFromLocalStorage(scenarioName);
-    const projectSchema = getProjectSchemaFromLocalStorage(scenarioName);
+    const { data: { packages } } = await getAssets(); // 获取资产包
+    const { data: projectSchema } = await getCurrentPageSchema();
+    console.log('packages--', packages);
+    console.log('result---', projectSchema);
     const { componentsMap: componentsMapArray, componentsTree } = projectSchema;
     const componentsMap: any = {};
     componentsMapArray.forEach((component: any) => {
@@ -40,12 +41,15 @@ const SamplePreview = () => {
       }
     });
 
-    const vendors = [assetBundle(libraryAsset, AssetLevel.Library)];
+    // const vendors = [assetBundle(libraryAsset, AssetLevel.Library)];
 
     // TODO asset may cause pollution
     const assetLoader = new AssetLoader();
     await assetLoader.load(libraryAsset);
-    const components = await injectComponents(buildComponents(libraryMap, componentsMap));
+    const components = await buildComponents(libraryMap, componentsMap);
+
+    console.log('schema---', schema)
+    console.log('components---', components)
 
     setData({
       schema,

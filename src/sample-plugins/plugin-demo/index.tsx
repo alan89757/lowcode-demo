@@ -28,7 +28,7 @@ const LowcodePluginPluginDemo = (ctx: ILowCodePluginContext) => {
         props: {
           description: 'Demo',
         },
-        content: <div>这是一个 Demo 面板</div>,
+        content: <div>这是一个 Demo 面板22</div>,
       });
 
       ctx.logger.log('打个日志');
